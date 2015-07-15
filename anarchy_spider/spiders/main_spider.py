@@ -24,7 +24,15 @@ class AnarchySpider(scrapy.Spider):
         item = {}
         item['url'] = response.url
         item['html'] = response.body
-        fullPath =  self.path + response.url.split("/")[-1] + ".html"
+
+        # derive func_id
+        split = ((response.url.split("/")[-1]).split("?")[-1]).split("&")
+        fileName = [s for s in split if "func_id" in s]
+        if len(fileName) == 0:
+            fileName = "main"
+        else:
+            fileName = fileName[0].split("=")[-1]
+        fullPath =  self.path + fileName + ".html"
         file = open(fullPath, "w+")
         file.write(item["html"])
         file.close()
